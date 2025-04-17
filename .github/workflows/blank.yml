@@ -75,4 +75,5 @@ jobs:
             cd $GITHUB_WORKSPACE
             docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
             echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
+            docker service ls
           EOF
