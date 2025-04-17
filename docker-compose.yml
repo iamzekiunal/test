@@ -9,7 +9,8 @@ services:
     ports:
       - "80:80"
     deploy:
-      mode: global
+      mode: replicated
+      replicas: 2
       update_config:
         parallelism: 1
         delay: 10s
