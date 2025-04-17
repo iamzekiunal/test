@@ -79,7 +79,7 @@ jobs:
             # Başarılı olduğunu doğrula
             echo "Monitoring stack başarıyla dağıtıldı"
           
-            cd /github/projects/${{ github.repository }}
+            cd $GITHUB_WORKSPACE/github/projects/${{ github.repository }}
             docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
             echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
           EOF
