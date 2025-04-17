@@ -53,3 +53,7 @@ jobs:
       - name: Deploy to Docker Swarm
         run: |
           ssh ${{ env.SWARM_MANAGER_USER }}@${{ env.SWARM_MANAGER_IP }} "docker stack deploy -c ~/docker-compose.yml php-hello-world --with-registry-auth"
+
+      - name: Set deployment status output
+        run: echo "deployment_status=success" >> $GITHUB_OUTPUT
+        id: deployment
