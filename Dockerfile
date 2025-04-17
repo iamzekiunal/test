@@ -20,7 +20,7 @@ RUN echo 'server { \
 # Create a simple HTML file that says "hello"
 RUN mkdir -p /usr/share/nginx/html
 RUN echo "<html><body><h1>hello</h1></body></html>" > /usr/share/nginx/html/index.html
-
+ADD index.html /usr/share/nginx/html/index.html
 # Expose port 80
 EXPOSE 80
 
