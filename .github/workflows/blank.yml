@@ -67,7 +67,7 @@ jobs:
             cd /opt/swarm/infra/stacks/monitoring
           
             # Stack'i dağıt
-            docker stack deploy -c docker-compose.yml monitoring
+            #docker stack deploy -c docker-compose.yml monitoring
           
             # Başarılı olduğunu doğrula
             echo "Monitoring stack başarıyla dağıtıldı"
