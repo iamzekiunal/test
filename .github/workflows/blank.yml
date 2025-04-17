@@ -23,10 +23,15 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     steps:
+      - name: Çalışma Dizini Hazırla
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/github/projects/${{ github.repository }}
+          chmod -R 777 $GITHUB_WORKSPACE/github
+
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          path: /github/projects/${{ github.repository }}
+          path: $GITHUB_WORKSPACE/github/projects/${{ github.repository }}
 
       - name: Proje Adını Ayıkla
         id: project
