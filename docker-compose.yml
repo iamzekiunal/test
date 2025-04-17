@@ -3,11 +3,26 @@ version: '3'
 
 services:
   php-app:
+    image: registry.nexusdeploy.com/public/test:latest
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - monitoring
     ports:
       - "8082:80"
     volumes:
       - ./:/var/www/html
     restart: always
+    deploy:
+      restart_policy:
+        condition: any
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints:
+          - node.labels.application == true
+
+networks:
+  monitoring:
+    external: true

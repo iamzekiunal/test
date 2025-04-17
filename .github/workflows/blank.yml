@@ -25,6 +25,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          path: /github/projects/${{ github.repository }}
+
+      - name: Proje Adını Ayıkla
+        id: project
+        run: echo "project_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_OUTPUT
+
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -66,4 +73,8 @@ jobs:
           
             # Başarılı olduğunu doğrula
             echo "Monitoring stack başarıyla dağıtıldı"
+          
+            cd /github/projects/${{ github.repository }}
+            docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
+            echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
           EOF
