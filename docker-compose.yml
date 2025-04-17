@@ -13,7 +13,6 @@ services:
       - "80:80"
     volumes:
       - ./:/var/www/html
-    restart: always
     deploy:
       restart_policy:
         condition: any
