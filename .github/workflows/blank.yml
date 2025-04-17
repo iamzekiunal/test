@@ -21,3 +21,6 @@ jobs:
       # Tek bir adım ekledim ama bu adım da hiçbir şey yapmıyor
       - name: Do Nothing
         run: echo "This workflow does nothing"
+
+      - name: Checkout code
+        uses: actions/checkout@v2
