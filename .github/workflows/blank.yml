@@ -1,12 +1,13 @@
-name: Empty Workflow
+name: Docker Build and Push
 
 # Workflow'un çalışacağı olaylar
 on:
   # Manuel tetikleme için workflow_dispatch ekledim
   workflow_dispatch:
-  # İsterseniz aşağıdaki satırları yorum işaretinden çıkararak diğer tetikleyicileri ekleyebilirsiniz
+  # Push olayları için
   push:
-     branches: [ main, master ]
+    branches: [ main, master ]
+  # Pull request olayları (isteğe bağlı)
   # pull_request:
   #   branches: [ main, master ]
 
@@ -14,27 +15,31 @@ on:
 permissions: {}
 
 env:
-  DOCKER_REGISTRY: docker.io
+  DOCKER_REGISTRY: registry.nexusdeploy.com
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  IMAGE_NAME: registry.nexusdeploy.com/public/test  # Docker imajınızın adını buraya ekleyin
 
 jobs:
-  empty-job:
-    name: Empty Job
+  build-and-push:
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
     steps:
-      # Tek bir adım ekledim ama bu adım da hiçbir şey yapmıyor
-      - name: Do Nothing
-        run: echo "This workflow does nothing"
-
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: registry.nexusdeploy.com/public/test
