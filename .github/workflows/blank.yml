@@ -73,6 +73,9 @@ jobs:
             echo "Monitoring stack başarıyla dağıtıldı"
           
             cd /home/runner/work/test/test/
+            ls -la /home/runner/work
+            ls -la /home/runner/work/test
+            ls -la /home/runner/work/test/test
             docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
             echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
           EOF
