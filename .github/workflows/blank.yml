@@ -60,20 +60,27 @@ jobs:
       - name: Connect to SSH server
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo SSH bağlantısı başarılı"
 
+
       - name: Deploy Stack to Swarm
         run: |
+          # Dosyayı uzak sunucuya kopyala (SCP kullanarak)
+          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/docker-compose.yml
+          
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            # Monitoring stack dizinine git
-            cd /opt/swarm/infra/stacks/monitoring
+            
+            # GITHUB_WORKSPACE dizinini oluştur
+            mkdir -p /opt/github_workspace/${{ steps.project.outputs.project_name }}
           
+            # Geçici konumdaki dosyayı hedef dizine taşı
+            mv /tmp/docker-compose.yml /opt/github_workspace/${{ steps.project.outputs.project_name }}/
+          
+            # Stack dizinine git ve dağıtımı yap
+            cd /opt/github_workspace/${{ steps.project.outputs.project_name }}
+            ls -la /opt/github_workspace/${{ steps.project.outputs.project_name }}
+            
             # Stack'i dağıt
-            #docker stack deploy -c docker-compose.yml monitoring
-          
-            # Başarılı olduğunu doğrula
-            echo "Monitoring stack başarıyla dağıtıldı"
-          
-            cd $GITHUB_WORKSPACE
             docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
+          
             echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
             docker service ls
           EOF
