@@ -72,15 +72,7 @@ jobs:
             # Başarılı olduğunu doğrula
             echo "Monitoring stack başarıyla dağıtıldı"
           
-            cd /home/runner/work/test/test/
-            ls -la /home/runner/work
-            ls -la /home/runner/work/test
-            ls -la /home/runner/work/test/test
-            echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-            echo "Çalışma dizini içeriği:"
-            ls -la $GITHUB_WORKSPACE
-            echo "Bulunduğumuz dizin:"
-            pwd
+            cd $GITHUB_WORKSPACE
             docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
             echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
           EOF
