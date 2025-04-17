@@ -1,6 +1,3 @@
-
-version: '3'
-
 services:
   php-app:
     image: registry.nexusdeploy.com/public/test:latest
