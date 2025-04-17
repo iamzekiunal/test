@@ -17,11 +17,8 @@ services:
     deploy:
       restart_policy:
         condition: any
-      mode: replicated
-      replicas: 3
-      placement:
-        constraints:
-          - node.labels.application == true
+      mode: global
+
 
 networks:
   monitoring:
