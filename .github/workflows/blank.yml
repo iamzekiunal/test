@@ -1,29 +1,23 @@
-name: Deploy to Docker Swarm
+name: Empty Workflow
 
+# Workflow'un çalışacağı olaylar
 on:
-  push:
-    branches: [ main, master ]
+  # Manuel tetikleme için workflow_dispatch ekledim
+  workflow_dispatch:
+  # İsterseniz aşağıdaki satırları yorum işaretinden çıkararak diğer tetikleyicileri ekleyebilirsiniz
+  # push:
+  #   branches: [ main, master ]
+  # pull_request:
+  #   branches: [ main, master ]
 
-env:
-  DOCKER_REGISTRY: docker.io
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  GITHUB_REPOSITORY_NAME: ${{ github.repository_owner }}/php-hello-world
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  SWARM_MANAGER_IP: ${{ secrets.SWARM_MANAGER_IP }}
-  SWARM_MANAGER_USER: ${{ secrets.SWARM_MANAGER_USER }}
-  IMAGE_TAG: ${{ github.sha }}
+# İzinleri en aza indiriyoruz
+permissions: {}
 
 jobs:
-  build-and-deploy:
+  empty-job:
+    name: Empty Job
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
+      # Tek bir adım ekledim ama bu adım da hiçbir şey yapmıyor
+      - name: Do Nothing
+        run: echo "This workflow does nothing"
