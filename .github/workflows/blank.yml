@@ -23,15 +23,8 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     steps:
-      - name: Çalışma Dizini Hazırla
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/github/projects/${{ github.repository }}
-          chmod -R 777 $GITHUB_WORKSPACE/github
-
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          path: $GITHUB_WORKSPACE/github/projects/${{ github.repository }}
 
       - name: Proje Adını Ayıkla
         id: project
@@ -79,7 +72,7 @@ jobs:
             # Başarılı olduğunu doğrula
             echo "Monitoring stack başarıyla dağıtıldı"
           
-            cd $GITHUB_WORKSPACE/github/projects/${{ github.repository }}
+            cd /home/runner/work/test/test/
             docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
             echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
           EOF
