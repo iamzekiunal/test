@@ -5,8 +5,8 @@ on:
   # Manuel tetikleme için workflow_dispatch ekledim
   workflow_dispatch:
   # İsterseniz aşağıdaki satırları yorum işaretinden çıkararak diğer tetikleyicileri ekleyebilirsiniz
-  # push:
-  #   branches: [ main, master ]
+  push:
+     branches: [ main, master ]
   # pull_request:
   #   branches: [ main, master ]
 
