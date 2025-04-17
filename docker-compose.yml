@@ -8,8 +8,6 @@ services:
       - monitoring
     ports:
       - "80:80"
-    volumes:
-      - ./:/var/www/html
     deploy:
       mode: global
       update_config:
