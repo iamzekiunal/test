@@ -1,36 +1,55 @@
-# This is a basic workflow to help you get started with Actions
+name: Deploy to Docker Swarm
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ main, master ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+env:
+  DOCKER_REGISTRY: docker.io
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  GITHUB_REPOSITORY_NAME: ${{ github.repository_owner }}/php-hello-world
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  SWARM_MANAGER_IP: ${{ secrets.SWARM_MANAGER_IP }}
+  SWARM_MANAGER_USER: ${{ secrets.SWARM_MANAGER_USER }}
+  IMAGE_TAG: ${{ github.sha }}
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  build-and-deploy:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.GITHUB_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }},${{ env.DOCKER_REGISTRY }}/${{ env.GITHUB_REPOSITORY_NAME }}:latest
+
+      - name: Install SSH key
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          mkdir -p ~/.ssh
+          echo "${{ env.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ env.SWARM_MANAGER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Copy docker-compose.yml to swarm manager
+        run: |
+          envsubst < docker-compose.yml > docker-compose.deployed.yml
+          scp docker-compose.deployed.yml ${{ env.SWARM_MANAGER_USER }}@${{ env.SWARM_MANAGER_IP }}:~/docker-compose.yml
+
+      - name: Deploy to Docker Swarm
+        run: |
+          ssh ${{ env.SWARM_MANAGER_USER }}@${{ env.SWARM_MANAGER_IP }} "docker stack deploy -c ~/docker-compose.yml php-hello-world --with-registry-auth"
