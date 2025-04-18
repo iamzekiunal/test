@@ -95,14 +95,14 @@ jobs:
               
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 mkdir -p /opt/swarm/deployer/stacks
-                cd /opt/swarm/deployer/
-                make create
               "
               scp -r $GITHUB_WORKSPACE/.github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}/
               
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 sudo mkdir -p /***/.config
                 sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
+                cd /opt/swarm/deployer/
+                make create
               "
             else
               echo "Instance configuration not found"
