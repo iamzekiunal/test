@@ -88,11 +88,16 @@ jobs:
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-                mkdir -p /opt/swarm/deployer/worker
+                mkdir -p /opt/swarm/deployer/workers
               "
-              scp .github/deploy/$label_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/worker/$label_key
-              #cd /opt/deployer
-              #make create_droplet "$label_key"
+              scp .github/deploy/$label_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/workers/$label_key
+              
+              ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+                mkdir -p /opt/swarm/deployer/workers
+                cd /opt/swarm/deployer/
+                make create
+              "
+              
             fi
           done
           
