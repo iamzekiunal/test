@@ -110,10 +110,9 @@ jobs:
           
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
  
-            cd /opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}
-          
             # Stack'i dağıt
-            docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
+            cd /opt/swarm/deployer/
+            make deploy-stack STACK=test ${{ steps.project.outputs.project_name }}
           
             echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
             docker service update --image registry.nexusdeploy.com/public/test:latest --force ${{ steps.project.outputs.project_name }}_php-app
