@@ -25,6 +25,7 @@ services:
   # MongoDB for development
   mongodb:
     image: mongo:6
+    user: root
     environment:
       MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongodb-root-user
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongodb-root-password
