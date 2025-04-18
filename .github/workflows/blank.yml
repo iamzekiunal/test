@@ -88,6 +88,7 @@ jobs:
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
               echo "${{ secrets.DIGITALOCEAN_TOKEN }}"
+              echo "${{ secrets.SSH_USER }}"
               #cd /opt/deployer
               #make create_droplet "$label_key"
             fi
@@ -99,7 +100,10 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             
             echo "${{ secrets.DIGITALOCEAN_TOKEN }}"
+            ${{ secrets.SSH_USER }}
             
+            echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
+          
             # GITHUB_WORKSPACE dizinini oluştur
             mkdir -p /opt/github_workspace/${{ steps.project.outputs.project_name }}
           
