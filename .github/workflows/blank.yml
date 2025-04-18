@@ -93,6 +93,8 @@ jobs:
               scp .github/deploy/$label_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/workers/$label_key
               
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+                sudo mkdir -p /***/.config
+                sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
                 mkdir -p /opt/swarm/deployer/workers
                 cd /opt/swarm/deployer/
                 make create
