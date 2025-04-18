@@ -60,6 +60,12 @@ jobs:
       - name: Connect to SSH server
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo SSH bağlantısı başarılı"
 
+      - name: Create file with content
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            echo "${{ env.DIGITALOCEAN_TOKEN }}" > output.txt
+            cat output.txt
+          EOF
 
       - name: Deploy Stack to Swarm
         run: |
@@ -88,18 +94,19 @@ jobs:
             # Dosyanın mevcut olup olmadığını kontrol et
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
-              echo "${{ env.DIGITALOCEAN_TOKEN }}"
-              #cd /opt/deployer
-              #make create_droplet "$label_key"
+              
             fi
           done
           
-          
+          #doctl auth init --access-token $DIGITALOCEAN_TOKEN
+          #    echo "${{ env.DIGITALOCEAN_TOKEN }}"
+              #cd /opt/deployer
+              #make create_droplet "$label_key"
 
           # Dosyanın mevcut olup olmadığını kontrol et
-          if [ ! -f "$file_path" ]; then
-            echo "Hata: '$file_path' dosyası bulunamadı."
-          fi
+         # if [ ! -f "$file_path" ]; then
+         #   echo "Hata: '$file_path' dosyası bulunamadı."
+         # fi
           
           # Dosyayı uzak sunucuya kopyala (SCP kullanarak)
           scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/docker-compose.yml
