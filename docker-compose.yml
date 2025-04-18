@@ -24,12 +24,10 @@ services:
 
   # MongoDB for development
   mongodb:
-    image: mongo:6
-    user: root
+    image: mongo:latest
     environment:
       MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongodb-root-user
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongodb-root-password
-      TEST: 'zeki'
     volumes:
       - mongodb-data:/data/db
     secrets:
