@@ -60,8 +60,6 @@ jobs:
       - name: Connect to SSH server
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo SSH bağlantısı başarılı"
 
-
-
       - name: Deploy Stack to Swarm
         run: |
           
