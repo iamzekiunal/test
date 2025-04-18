@@ -1,0 +1,5 @@
+COUNT=1
+IMAGE=ubuntu-24-10-x64
+SIZE=s-1vcpu-1gb
+TAGS=example1,example2
+CLUSTER=master,master
