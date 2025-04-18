@@ -91,7 +91,7 @@ jobs:
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 mkdir -p /opt/swarm/deployer/stacks
               "
-              scp -r $GITHUB_WORKSPACE/.github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ env.STACK_NAME }}/
+              scp -r $GITHUB_WORKSPACE/.github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}/
               
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 sudo mkdir -p /***/.config
@@ -105,29 +105,11 @@ jobs:
           done
           
           # Dosyayı uzak sunucuya kopyala (SCP kullanarak)
-          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/docker-compose.yml
-          
+          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}/docker-compose.yml
           
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            
-            echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
-            sudo mkdir -p /***/.config
-            sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
-            IP=$(doctl compute droplet get "manager-1" --format PublicIPv4 --no-header) || true
-          
-            echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
-            echo $IP
-            echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
-          
-            # GITHUB_WORKSPACE dizinini oluştur
-            mkdir -p /opt/github_workspace/${{ steps.project.outputs.project_name }}
-          
-            # Geçici konumdaki dosyayı hedef dizine taşı
-            mv /tmp/docker-compose.yml /opt/github_workspace/${{ steps.project.outputs.project_name }}/
-          
-            # Stack dizinine git ve dağıtımı yap
-            cd /opt/github_workspace/${{ steps.project.outputs.project_name }}
-            ls -la /opt/github_workspace/${{ steps.project.outputs.project_name }}
+ 
+            cd /opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}
           
             # Stack'i dağıt
             docker stack deploy -c docker-compose.yml ${{ steps.project.outputs.project_name }}
