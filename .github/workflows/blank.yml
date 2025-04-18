@@ -92,11 +92,14 @@ jobs:
               #make create_droplet "$label_key"
             fi
           done
+          
           # Dosyayı uzak sunucuya kopyala (SCP kullanarak)
           scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/docker-compose.yml
           
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-          
+            
+            echo "${{ secrets.DIGITALOCEAN_TOKEN }}"
+            
             # GITHUB_WORKSPACE dizinini oluştur
             mkdir -p /opt/github_workspace/${{ steps.project.outputs.project_name }}
           
