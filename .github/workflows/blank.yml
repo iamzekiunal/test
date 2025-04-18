@@ -63,6 +63,35 @@ jobs:
 
       - name: Deploy Stack to Swarm
         run: |
+          file_path=$GITHUB_WORKSPACE/docker-compose.yml
+
+          # Dosyanın mevcut olup olmadığını kontrol et
+          if [ ! -f "$file_path" ]; then
+            echo "Hata: '$file_path' dosyası bulunamadı."
+          fi
+          
+          # node.labels.XXX == YYY pattern'lerini ara ve çıkar
+          echo "Dosya: $file_path"
+          
+          # grep ile node.labels. içeren satırları bul
+          # sed ile XXX ve YYY kısımlarını çıkar
+          grep -o "node\.labels\.[a-zA-Z0-9_]*\s*==\s*[a-zA-Z0-9_]*" "$file_path" | while read -r line; do
+            # Etiket (XXX) kısmını çıkar
+            label_key=$(echo "$line" | sed -E 's/node\.labels\.([a-zA-Z0-9_]*)\s*==\s*.*/\1/')
+          
+            # Değer (YYY) kısmını çıkar
+            label_value=$(echo "$line" | sed -E 's/.*==\s*([a-zA-Z0-9_]*)/\1/')
+            echo "Etiket: $label_key, Değer: $label_value"
+          
+            file_path=$GITHUB_WORKSPACE/.github/deploy/$label_key
+            # Dosyanın mevcut olup olmadığını kontrol et
+            if [ -f "$file_path" ]; then
+              echo "Instance configuration found"
+              echo "${{ secrets.DIGITALOCEAN_TOKEN }}"
+              #cd /opt/deployer
+              #make create_droplet "$label_key"
+            fi
+          done
           # Dosyayı uzak sunucuya kopyala (SCP kullanarak)
           scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/docker-compose.yml
           
