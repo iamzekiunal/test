@@ -99,6 +99,7 @@ jobs:
                 cd /opt/swarm/deployer
                 make create
               "
+          
             else
               echo "Instance configuration not found"
             fi
