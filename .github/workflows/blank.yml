@@ -102,7 +102,7 @@ jobs:
             echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
             sudo mkdir -p /***/.config
             sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
-            IP=$(doctl compute droplet get "manager-1" --format PublicIPv4 --no-header)
+            IP=$(doctl compute droplet get "manager-1" --format PublicIPv4 --no-header) || true
           
             echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
             echo $IP
