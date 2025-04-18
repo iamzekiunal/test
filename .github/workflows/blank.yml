@@ -62,10 +62,7 @@ jobs:
 
       - name: Create file with content
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            echo "${{ env.DIGITALOCEAN_TOKEN }}" > output.txt
-            cat output.txt
-          EOF
+          echo "tesfs"
 
       - name: Deploy Stack to Swarm
         run: |
