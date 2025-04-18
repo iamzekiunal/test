@@ -99,9 +99,8 @@ jobs:
           
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             
-            echo "${{ secrets.DIGITALOCEAN_TOKEN }}"
-            ${{ secrets.SSH_USER }}
-            
+            echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
+            doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
             echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
           
             # GITHUB_WORKSPACE dizinini oluştur
