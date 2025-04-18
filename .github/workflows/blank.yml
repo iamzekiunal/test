@@ -17,6 +17,7 @@ permissions: {}
 env:
   DOCKER_REGISTRY: registry.nexusdeploy.com
   IMAGE_NAME: public/test
+  STACK_NAME: test-app
 
 jobs:
   build-and-push:
@@ -88,15 +89,15 @@ jobs:
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-                mkdir -p /opt/swarm/deployer/workers
+                rm -fr /opt/swarm/deployer
+                mkdir -p /opt/swarm/deployer
               "
-              scp .github/deploy/$label_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/workers/$label_key
+              scp .github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer
               
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 sudo mkdir -p /***/.config
                 sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
-                mkdir -p /opt/swarm/deployer/workers
-                cd /opt/swarm/deployer/
+                cd /opt/swarm/deployer
                 make create
               "
             fi

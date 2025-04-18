@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     networks:
-      - monitoring
+      - test-app-mongo
     ports:
       - "80:80"
     deploy:
@@ -38,15 +38,23 @@ services:
         target: /run/secrets/mongodb-root-password
         mode: 0400
     networks:
-      - database
+      - test-app-mongo
     deploy:
       replicas: 1
       placement:
         constraints:
           - node.labels.database == true
 
+secrets:
+  mongodb-root-user:
+    external: true
+  mongodb-root-password:
+    external: true
 
+volumes:
+  mongodb-data:
+    external: true
 
 networks:
-  monitoring:
+  test-app-mongo:
     external: true
