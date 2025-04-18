@@ -96,8 +96,6 @@ jobs:
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 sudo mkdir -p /***/.config
                 sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
-                cd /opt/swarm/deployer
-                make create
               "
           
             else
