@@ -56,16 +56,14 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Create file with content
-        run: |
-          echo "YYY" > output.txt
-          cat output.txt
-
       # SSH ile sunucuya bağlanma (örnek)
       - name: Connect to SSH server
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo SSH bağlantısı başarılı"
 
-
+      - name: Create file with content
+        run: |
+          echo "${{ secrets.DIGITALOCAEN_TOKEN }}" > output.txt
+          cat output.txt
 
       - name: Deploy Stack to Swarm
         run: |
@@ -94,7 +92,7 @@ jobs:
             # Dosyanın mevcut olup olmadığını kontrol et
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
-              echo "${{ env.DIGITALOCEAN_TOKEN }}"
+              echo "${{ secrets.DIGITALOCEAN_TOKEN }}"
               #cd /opt/deployer
               #make create_droplet "$label_key"
             fi
