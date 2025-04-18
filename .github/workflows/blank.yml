@@ -100,7 +100,8 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             
             echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
-            doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
+            sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
+            doctl compute droplet get "manager-1" --format PublicIPv4 --no-header
             echo "HEEEEEEEREEEEEEEEEEEEEEEEEEEEE"
           
             # GITHUB_WORKSPACE dizinini oluştur
