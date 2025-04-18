@@ -88,6 +88,7 @@ jobs:
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          
                 mkdir -p /opt/swarm/deployer/worker
               EOF
               scp .github/deploy/$label_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/worker/$label_key
