@@ -104,7 +104,7 @@ jobs:
           done
           
           # Dosyayı uzak sunucuya kopyala (SCP kullanarak)
-          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}/stack/docker-compose.yml
+          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}/docker-compose.yml
           
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
  
