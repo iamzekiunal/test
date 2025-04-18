@@ -56,14 +56,16 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      # SSH ile sunucuya bağlanma (örnek)
-      - name: Connect to SSH server
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo SSH bağlantısı başarılı"
-
       - name: Create file with content
         run: |
           echo "YYY" > output.txt
           cat output.txt
+
+      # SSH ile sunucuya bağlanma (örnek)
+      - name: Connect to SSH server
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo SSH bağlantısı başarılı"
+
+
 
       - name: Deploy Stack to Swarm
         run: |
