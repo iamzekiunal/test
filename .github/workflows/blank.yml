@@ -84,7 +84,7 @@ jobs:
             label_value=$(echo "$line" | sed -E 's/.*==\s*([a-zA-Z0-9_]*)/\1/')
             echo "Etiket: $label_key, Değer: $label_value"
           
-            file_path=$GITHUB_WORKSPACE/.github/deploy/$label_key
+            file_path=$GITHUB_WORKSPACE/.github/deploy/workers/$label_key
             # Dosyanın mevcut olup olmadığını kontrol et
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
