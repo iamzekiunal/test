@@ -91,7 +91,7 @@ jobs:
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 mkdir -p /opt/swarm/deployer/stacks
               "
-              scp $GITHUB_WORKSPACE/.github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ env.STACK_NAME }}
+              scp -r $GITHUB_WORKSPACE/.github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ env.STACK_NAME }}/
               
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 sudo mkdir -p /***/.config
