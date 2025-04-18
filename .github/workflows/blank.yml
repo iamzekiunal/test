@@ -89,10 +89,9 @@ jobs:
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-                rm -fr /opt/swarm/deployer
-                mkdir -p /opt/swarm/deployer
+                mkdir -p /opt/swarm/deployer/stacks
               "
-              scp .github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer
+              scp .github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ env.STACK_NAME }}
               
               ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
                 sudo mkdir -p /***/.config
