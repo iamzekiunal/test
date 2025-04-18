@@ -87,18 +87,7 @@ jobs:
             # Dosyanın mevcut olup olmadığını kontrol et
             if [ -f "$file_path" ]; then
               echo "Instance configuration found"
-              scp .github/deploy/$label_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/$label_key
-              ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-                sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
-                doctl compute droplet create "$label_key" \
-                --region "fra1" \
-                 --image "184547560" \
-                --size "s-1vcpu-1gb" \
-                --ssh-keys "46815058" \
-                --tag-names "$label_key" \
-                --format ID,Name,PublicIPv4 \
-                --wait)
-              EOF
+              
               #cd /opt/deployer
               #make create_droplet "$label_key"
             fi
