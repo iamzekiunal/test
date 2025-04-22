@@ -22,30 +22,12 @@ services:
       placement:
         constraints:
           - node.labels.application == true
-
-  # MongoDB for development
-  mongodb:
-    image: mongo:latest
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: media
-      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongodb-root-password
-    volumes:
-      - mongodb-data:/data/db
-    secrets:
-      - source: mongodb-root-user
-        target: /run/secrets/mongodb-root-user
-        mode: 0644
-      - source: mongodb-root-password
-        target: /run/secrets/mongodb-root-password
-        mode: 0644
-    networks:
-      - test-app-mongo
-      - monitoring
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.database == true
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.php-app.rule=Host(`test.nexusdeploy.com`)"
+        - "traefik.http.routers.php-app.entrypoints=websecure"
+        - "traefik.http.routers.php-app.tls.certresolver=myresolver"
+        - "traefik.http.services.php-app.loadbalancer.server.port=80"
 
 secrets:
   mongodb-root-user:
