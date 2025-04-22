@@ -8,8 +8,6 @@ services:
       - test-app-mongo
       - monitoring
       - loadbalancer
-    ports:
-      - "80"
 
     deploy:
       mode: replicated
