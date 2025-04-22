@@ -25,7 +25,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.php-app.rule=Host(`test.nexusdeploy.com`)"
         - "traefik.http.routers.php-app.entrypoints=websecure"
-        - "traefik.http.routers.php-app.tls.certresolver=myresolver"
+        - "traefik.http.routers.php-app.tls.certresolver=letsencrypt"
         - "traefik.http.services.php-app.loadbalancer.server.port=80"
 
 secrets:
