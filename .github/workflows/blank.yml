@@ -52,10 +52,7 @@ jobs:
       - name: Set up SSH key
         run: |
           echo "Here"
-          #mkdir -p ~/.ssh
-          #echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          #chmod 600 ~/.ssh/id_rsa
-          #ssh-keyscan -H ${{ secrets.DEV_SSH_HOST }} >> ~/.ssh/known_hosts
+          
 
       # SSH ile sunucuya bağlanma (örnek)
       - name: Connect to SSH server
