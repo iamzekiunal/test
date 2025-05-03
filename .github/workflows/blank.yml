@@ -51,7 +51,8 @@ jobs:
       # SSH anahtarını ayarlama adımı
       - name: Set up SSH key
         run: |
-          mkdir -p ~/.ssh
+          echo "Here"
+          #mkdir -p ~/.ssh
           #echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           #chmod 600 ~/.ssh/id_rsa
           #ssh-keyscan -H ${{ secrets.DEV_SSH_HOST }} >> ~/.ssh/known_hosts
