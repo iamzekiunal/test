@@ -15,8 +15,8 @@ on:
 permissions: {}
 
 env:
-  DOCKER_REGISTRY: registry.nexusdeploy.com
-  IMAGE_NAME: public/test
+  DOCKER_REGISTRY: harbor.medianova.com
+  IMAGE_NAME: cloud-org/test
   STACK_NAME: test-app
 
 jobs:
@@ -41,25 +41,24 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      #- name: Build and push
+      #  uses: docker/build-push-action@v4
+      #  with:
+      #    context: .
+      #    push: true
+      #    tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       # SSH anahtarını ayarlama adımı
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.DEV_SSH_HOST }} >> ~/.ssh/known_hosts
 
       # SSH ile sunucuya bağlanma (örnek)
       - name: Connect to SSH server
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo SSH bağlantısı başarılı"
-
+        run: ssh ${{ secrets.DEV_SSH_USER }}@${{ secrets.DEV_SSH_HOST }} "echo SSH bağlantısı başarılı"
 
       - name: Deploy Stack to Swarm
         run: |
@@ -69,57 +68,3 @@ jobs:
           if [ ! -f "$file_path" ]; then
             echo "Hata: '$file_path' dosyası bulunamadı."
           fi
-          
-          # node.labels.XXX == YYY pattern'lerini ara ve çıkar
-          echo "Dosya: $file_path"
-          
-          # grep ile node.labels. içeren satırları bul
-          # sed ile XXX ve YYY kısımlarını çıkar
-          grep -o "node\.labels\.[a-zA-Z0-9_]*\s*==\s*[a-zA-Z0-9_]*" "$file_path" | while read -r line; do
-            # Etiket (XXX) kısmını çıkar
-            label_key=$(echo "$line" | sed -E 's/node\.labels\.([a-zA-Z0-9_]*)\s*==\s*.*/\1/')
-          
-            # Değer (YYY) kısmını çıkar
-            label_value=$(echo "$line" | sed -E 's/.*==\s*([a-zA-Z0-9_]*)/\1/')
-            echo "Etiket: $label_key, Değer: $label_value"
-          
-            file_path=$GITHUB_WORKSPACE/.github/deploy/workers/$label_key
-            # Dosyanın mevcut olup olmadığını kontrol et
-            if [ -f "$file_path" ]; then
-              echo "Instance configuration found"
-              
-              ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-                mkdir -p /opt/swarm/deployer/workers
-              "
-              scp $GITHUB_WORKSPACE/.github/deploy/workers/$label_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/workers/$label_key
-              
-              ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-                mkdir -p /opt/swarm/deployer/stacks
-              "
-              scp -r $GITHUB_WORKSPACE/.github/deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}/
-              
-              ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-                sudo mkdir -p /***/.config
-                sudo doctl auth init --access-token ${{ secrets.DIGITALOCEAN_TOKEN }}
-                cd /opt/swarm/deployer/
-                make create-droplet FILE=workers/$label_key
-              "
-            else
-              echo "Instance configuration not found"
-            fi
-          done
-          
-          # Dosyayı uzak sunucuya kopyala (SCP kullanarak)
-          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/swarm/deployer/stacks/${{ steps.project.outputs.project_name }}/docker-compose.yml
-          
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
- 
-            # Stack'i dağıt
-            cd /opt/swarm/deployer/
-            make deploy-stack STACK=${{ steps.project.outputs.project_name }}
-          
-            echo "${{ steps.project.outputs.project_name }} stack'i başarıyla dağıtıldı"
-          
-            docker stack ls
-            docker service ls
-          EOF
