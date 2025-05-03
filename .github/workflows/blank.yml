@@ -15,8 +15,8 @@ on:
 permissions: {}
 
 env:
-  DOCKER_REGISTRY: harbor.medianova.com
-  IMAGE_NAME: cloud-org/test
+  DOCKER_REGISTRY: harbor.medianova.com/cloud-org
+  IMAGE_NAME: test
   STACK_NAME: test-app
 
 jobs:
