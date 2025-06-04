@@ -65,4 +65,3 @@ jobs:
           if [ ! -f "$file_path" ]; then
             echo "Hata: '$file_path' dosyası bulunamadı."
           fi
-          
