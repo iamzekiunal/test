@@ -52,7 +52,6 @@ jobs:
       - name: Set up SSH key
         run: |
           echo "Here"
-          
 
       # SSH ile sunucuya bağlanma (örnek)
       - name: Connect to SSH server
