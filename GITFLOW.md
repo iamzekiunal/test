@@ -596,3 +596,95 @@ end
 
     M -- Yeni Sürüm Başlangıcı --> D
 ```
+
+### Yeni Özellik Geliştirme Sırası
+
+```mermaid
+
+sequenceDiagram
+    actor Geliştirici
+    participant YerelRepo as Yerel Depo
+    participant UzakRepo as Uzak Depo (GitHub)
+    participant develop as develop Dalı
+    participant feature as feature/yeni-ozellik Dalı
+
+    Geliştirici->>YerelRepo: git checkout develop
+    Geliştirici->>YerelRepo: git pull origin develop (Güncelle)
+    Geliştirici->>YerelRepo: git checkout -b feature/yeni-ozellik (Yeni özellik dalı oluştur)
+    activate feature
+    Geliştirici->>feature: Kod yazar, commit'ler yapar
+    Geliştirici->>YerelRepo: git push -u origin feature/yeni-ozellik (Uzak depoya gönder)
+    Geliştirici->>UzakRepo: Pull Request oluştur (feature -> develop)
+    UzakRepo-->>Geliştirici: Kod gözden geçirme / Testler
+    Note right of UzakRepo: Onay ve birleştirme
+    UzakRepo->>develop: feature/yeni-ozellik birleştirilir
+    deactivate feature
+    Geliştirici->>UzakRepo: (Opsiyonel) feature/yeni-ozellik dalını sil
+
+
+```
+
+### Sürüm Yayınlama Sırası
+```mermaid
+
+sequenceDiagram
+    actor Geliştirici
+    participant YerelRepo as Yerel Depo
+    participant UzakRepo as Uzak Depo (GitHub)
+    participant develop as develop Dalı
+    participant release as release/vX.Y.Z Dalı
+    participant main as main Dalı
+
+    Geliştirici->>YerelRepo: git checkout develop
+    Geliştirici->>YerelRepo: git pull origin develop
+    Geliştirici->>YerelRepo: git checkout -b release/vX.Y.Z (Sürüm dalı oluştur)
+    activate release
+    Geliştirici->>release: Son düzeltmeler, belge güncellemeleri, commit'ler
+    Geliştirici->>YerelRepo: git push -u origin release/vX.Y.Z
+    Geliştirici->>UzakRepo: PR oluştur (release -> main)
+    Note right of UzakRepo: Onay ve birleştirme (main'e)
+    UzakRepo->>main: release/vX.Y.Z birleştirilir
+    Geliştirici->>YerelRepo: git checkout main
+    Geliştirici->>YerelRepo: git pull origin main
+    Geliştirici->>YerelRepo: git tag vX.Y.Z (Sürümü etiketle)
+    Geliştirici->>YerelRepo: git push origin vX.Y.Z (Etiketi gönder)
+    Geliştirici->>UzakRepo: PR oluştur (release -> develop)
+    Note right of UzakRepo: Onay ve birleştirme (develop'a)
+    UzakRepo->>develop: release/vX.Y.Z birleştirilir
+    deactivate release
+    Geliştirici->>UzakRepo: (Opsiyonel) release/vX.Y.Z dalını sil
+
+
+```
+### Acil Hata Düzeltme (Hotfix) Sırası
+
+```mermaid
+
+sequenceDiagram
+    actor Geliştirici
+    participant YerelRepo as Yerel Depo
+    participant UzakRepo as Uzak Depo (GitHub)
+    participant main as main Dalı
+    participant hotfix as hotfix/sorun-adi Dalı
+    participant develop as develop Dalı
+
+    Geliştirici->>YerelRepo: git checkout main
+    Geliştirici->>YerelRepo: git pull origin main
+    Geliştirici->>YerelRepo: git checkout -b hotfix/sorun-adi (Hotfix dalı oluştur)
+    activate hotfix
+    Geliştirici->>hotfix: Hatayı düzeltir, commit'ler
+    Geliştirici->>YerelRepo: git push -u origin hotfix/sorun-adi
+    Geliştirici->>UzakRepo: PR oluştur (hotfix -> main)
+    Note right of UzakRepo: Onay ve birleştirme (main'e)
+    UzakRepo->>main: hotfix/sorun-adi birleştirilir
+    Geliştirici->>YerelRepo: git checkout main
+    Geliştirici->>YerelRepo: git pull origin main
+    Geliştirici->>YerelRepo: git tag vX.Y.Z+1 (Yeni sürümü etiketle)
+    Geliştirici->>YerelRepo: git push origin vX.Y.Z+1 (Etiketi gönder)
+    Geliştirici->>UzakRepo: PR oluştur (hotfix -> develop)
+    Note right of UzakRepo: Onay ve birleştirme (develop'a)
+    UzakRepo->>develop: hotfix/sorun-adi birleştirilir
+    deactivate hotfix
+    Geliştirici->>UzakRepo: (Opsiyonel) hotfix/sorun-adi dalını sil
+
+```
